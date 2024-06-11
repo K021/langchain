@@ -1,12 +1,16 @@
+# Get pass OpenAI API key from user input
 # import getpass
 # import os
-
 # os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
+
+from dotenv import load_dotenv
 
 import openai
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 # from langsmith import traceable
+
+load_dotenv("secrets/.env")
 
 model = ChatOpenAI(model="gpt-3.5-turbo")
 

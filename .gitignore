@@ -3,6 +3,7 @@
 
 ### Custom ###
 .python-version
+secrets/
 
 ### macOS ###
 # General

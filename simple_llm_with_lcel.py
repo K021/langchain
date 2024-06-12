@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import openai
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.output_parsers import StrOutputParser
 # from langsmith import traceable
 
 load_dotenv("secrets/.env")
@@ -19,6 +20,8 @@ messages = [
     HumanMessage(content="hi!"),
 ]
 
+str_parser = StrOutputParser()
+
 # traceable 을 직접 호출하지 않아도, ChatOpenAI 의 인스턴스의 input output 이 자동으로 로깅된다.
 # @traceable
 def invoke(messages):
@@ -26,8 +29,9 @@ def invoke(messages):
         response = model.invoke(messages)
     except openai.AuthenticationError as e:
         print("Authentication error. Please check your OpenAI API key.")
-    else:
-        print(response)
+    
+    result_text = str_parser.invoke(response)
+    print(result_text)
 
 
 if __name__ == "__main__":

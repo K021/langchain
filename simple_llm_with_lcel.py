@@ -14,24 +14,23 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv("secrets/.env")
 
 model = ChatOpenAI(model="gpt-3.5-turbo")
+str_parser = StrOutputParser()
+chain = model | str_parser
 
 messages = [
     SystemMessage(content="Translate the following from English into Italian"),
     HumanMessage(content="hi!"),
 ]
 
-str_parser = StrOutputParser()
-
 # traceable 을 직접 호출하지 않아도, ChatOpenAI 의 인스턴스의 input output 이 자동으로 로깅된다.
 # @traceable
 def invoke(messages):
     try:
-        response = model.invoke(messages)
+        response = chain.invoke(messages)
     except openai.AuthenticationError as e:
         print("Authentication error. Please check your OpenAI API key.")
     
-    result_text = str_parser.invoke(response)
-    print(result_text)
+    print(response)
 
 
 if __name__ == "__main__":

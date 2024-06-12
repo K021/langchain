@@ -9,13 +9,22 @@ import openai
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 # from langsmith import traceable
 
 load_dotenv("secrets/.env")
 
 model = ChatOpenAI(model="gpt-3.5-turbo")
 str_parser = StrOutputParser()
-chain = model | str_parser
+
+prompt_template = ChatPromptTemplate.from_messages(
+    [
+        ("system", "Translate the following from English into {language}"),
+        ("user", "{text}"),
+    ]
+)
+
+chain = prompt_template | model | str_parser
 
 messages = [
     SystemMessage(content="Translate the following from English into Italian"),
@@ -26,7 +35,7 @@ messages = [
 # @traceable
 def invoke(messages):
     try:
-        response = chain.invoke(messages)
+        response = chain.invoke({"language": "Italian", "text": "hi!"})
     except openai.AuthenticationError as e:
         print("Authentication error. Please check your OpenAI API key.")
     
